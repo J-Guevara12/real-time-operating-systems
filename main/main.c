@@ -15,7 +15,7 @@ void blinky(void *pvParameter){
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
     bool ledBlinking;
     while(1) {
-        xQueueReceive(shouldBlink,&lendBlinking,(TickType_t)10);
+        xQueueReceive(shouldBlink,&ledBlinking,(TickType_t)10);
         /* Blink off (output low) */
         gpio_set_level(BLINK_GPIO, 0);
         vTaskDelay(pdMS_TO_TICKS(100));
