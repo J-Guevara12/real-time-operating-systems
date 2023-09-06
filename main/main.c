@@ -9,6 +9,8 @@
 #define BLINK_GPIO 2
 #define INTERRUPT_GPIO 13
 
+QueueHandle_t queue1;
+
 void blinky(void *pvParameter){
     
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
@@ -27,6 +29,7 @@ void isr(void *parameter){
 }
 void app_main()
 {
+    queue1 = xQueueCreate(10,sizeof(bool));
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
     gpio_set_direction(INTERRUPT_GPIO,GPIO_MODE_INPUT);
     gpio_set_pull_mode(INTERRUPT_GPIO,GPIO_PULLUP_ONLY);
