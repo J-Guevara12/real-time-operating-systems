@@ -13,14 +13,15 @@ QueueHandle_t shouldBlink;
 void blinky(void *pvParameter){
     
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
-    bool ledBlinking;
+    
     while(1) {
-        xQueueReceive(shouldBlink,&ledBlinking,(TickType_t)10);
+        
         /* Blink off (output low) */
         gpio_set_level(BLINK_GPIO, 0);
         vTaskDelay(pdMS_TO_TICKS(100));
         /* Blink on (output high) */
-        if(ledBlinking)
+       
+        if  (QueueReceive(shouldBlink,NULL,(TickType_t)10) )
             gpio_set_level(BLINK_GPIO, 1);
         vTaskDelay(pdMS_TO_TICKS(100));
     }
@@ -28,10 +29,9 @@ void blinky(void *pvParameter){
 
 void isr(void *parameter){
     // Inverts the current state held in the buffer
-    bool ledBlinking;
-    xQueueReceiveFromISR(ledBlinking,&shouldBlink,NULL);
-    ledBlinking = !ledBlinking;
-    xQueueSendFromISR(shouldBlink,&ledBlinking,NULL);
+    
+   
+    xQueueSendFromISR(shouldBlink,NULL,NULL);
 }
 void app_main()
 {
