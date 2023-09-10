@@ -21,7 +21,8 @@ void ledControlAdcTask(void *pvParameter){
     uint32_t potentiometerValue = 0;
     
     while(1) {
-        adc_read(&potentiometerValue);  // Ready Value potentiometer from ADC
+        // Ready Value potentiometer from ADC
+        adc_read(&potentiometerValue);  
 
         // settings value potentiometer yo adjust the brightness of the led
         uint32_t scaledValue = (potentiometerValue * 3) / ADC_RESOLUTION;
