@@ -17,6 +17,7 @@
 
 static const char* TAG = "MAIN";
 
+// Declaración de colas
 QueueHandle_t currentChannel;
 QueueHandle_t brightness;
 
@@ -25,6 +26,7 @@ Queues queuesStruct = {
     .brightnessQueue = &brightness
 };
 
+// Interuption
 void isr(void *parameter){
     int msg = 10;
     xQueueSendFromISR(currentChannel,&msg,NULL);
@@ -37,20 +39,27 @@ void app_main()
 
     ESP_LOGI(TAG,"pointer %p",(void *)&brightness);
 
+ // Inicialización de PWM para controlar LEDs  
     ledc_init_with_pin(R_PIN,0);
     ledc_init_with_pin(G_PIN,1);
     ledc_init_with_pin(B_PIN,2);
 
+//Inicializacion del ADC
     adc_init();
 
+//Configutacion de interrupciones (Pines)
     gpio_set_direction(INTERRUPT_GPIO,GPIO_MODE_INPUT);
     gpio_set_pull_mode(INTERRUPT_GPIO,GPIO_PULLUP_ONLY);
 
+
+// Habilitar interrupcion  negatica / flaco de bajada
     gpio_intr_enable(INTERRUPT_GPIO);
     gpio_set_intr_type(INTERRUPT_GPIO,GPIO_INTR_NEGEDGE);
     gpio_install_isr_service(0);
     gpio_isr_handler_add(INTERRUPT_GPIO,isr,NULL);
 
+
+// Tareas
     xTaskCreate(&readFromQueue, "read from queue", 2048,&queuesStruct,5,NULL );
     xTaskCreate(&write_queue,"write to queue",2048,&brightness,5,NULL);
 }
