@@ -5,7 +5,7 @@
 #include "driver/gpio.h"
 #include "freertos/queue.h"
 
-#include "led/led.h"
+#include "led.h"
 
 #define BLINK_GPIO 2
 #define BLINK_PERIOD 100
