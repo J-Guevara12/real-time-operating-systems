@@ -1,4 +1,7 @@
 #include <adc.h>
+#include "esp_log.h"
+
+static const char *TAG = "ADC";
 
 adc_oneshot_unit_handle_t adc_handler;
 
