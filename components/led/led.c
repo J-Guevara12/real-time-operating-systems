@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
+#include "freertos/queue.h"
 
 const char* TAG = "LED LIBRARY: ";
 
@@ -44,4 +45,15 @@ void fade(void *pvParameter){
 
         vTaskDelay(pdMS_TO_TICKS(50));
     }
+}
+
+void readFromQueue(void* queueToRead){
+    int brightness = 0;
+    while(true){
+        xQueueReceive(*(QueueHandle_t *)(queueToRead),&brightness,(TickType_t)10);
+        ledc_set_duty(LEDC_MODE,LEDC_CHANNEL,brightness);
+        ledc_update_duty(LEDC_MODE,LEDC_CHANNEL);
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
+
 }

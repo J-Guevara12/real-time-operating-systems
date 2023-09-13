@@ -14,4 +14,6 @@ void example_ledc_init(void);
 
 void fade(void *pvParameter);
 
+void readFromQueue(void* queueToRead);
+
 #endif
