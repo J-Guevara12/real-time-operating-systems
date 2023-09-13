@@ -6,6 +6,7 @@
 #include "freertos/queue.h"
 
 #include "led.h"
+#include "adc.h"
 
 #define BLINK_GPIO 2
 #define BLINK_PERIOD 100
@@ -22,7 +23,9 @@ void isr(void *parameter){
 void app_main()
 {
     brightness = xQueueCreate(1,sizeof(int));
+
     example_ledc_init();
+    adc_init();
 
     gpio_set_direction(INTERRUPT_GPIO,GPIO_MODE_INPUT);
     gpio_set_pull_mode(INTERRUPT_GPIO,GPIO_PULLUP_ONLY);
@@ -33,4 +36,5 @@ void app_main()
     gpio_isr_handler_add(INTERRUPT_GPIO,isr,NULL);
 
     xTaskCreate(&readFromQueue, "read from queue", 1024,&brightness,5,NULL );
+    xTaskCreate(&write_queue,"write to queue",1024,&brightness,5,NULL);
 }
