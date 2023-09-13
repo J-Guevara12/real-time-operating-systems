@@ -6,6 +6,7 @@
 #include "freertos/queue.h"
 
 #define BLINK_GPIO 2
+#define BLINK_PERIOD 100
 #define INTERRUPT_GPIO 13
 
 QueueHandle_t shouldBlink;
@@ -13,6 +14,8 @@ QueueHandle_t shouldBlink;
 void blinky(void *pvParameter){
     
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+    bool state = true;
+    bool sts;
     
     while(1) {
         
@@ -21,17 +24,17 @@ void blinky(void *pvParameter){
         vTaskDelay(pdMS_TO_TICKS(100));
         /* Blink on (output high) */
        
-        if  (QueueReceive(shouldBlink,NULL,(TickType_t)10) )
-            gpio_set_level(BLINK_GPIO, 1);
+        if  (xQueueReceive(shouldBlink,&sts,(TickType_t)10) )
+            state = !state;
+        gpio_set_level(BLINK_GPIO, state);
         vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
 void isr(void *parameter){
     // Inverts the current state held in the buffer
-    
-   
-    xQueueSendFromISR(shouldBlink,NULL,NULL);
+    bool var = false;
+    xQueueSendFromISR(shouldBlink,&var,NULL);
 }
 void app_main()
 {
