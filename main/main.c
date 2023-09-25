@@ -8,12 +8,14 @@
 
 #include "led.h"
 #include "adc.h"
+#include "uart.h"
 
 #define BLINK_PERIOD 100
 #define INTERRUPT_GPIO 13
 #define R_PIN 15
 #define G_PIN 2
 #define B_PIN 4
+#define UPDATE_PERIOD 50
 
 static const char* TAG = "MAIN";
 
@@ -58,8 +60,8 @@ void app_main()
     gpio_install_isr_service(0);
     gpio_isr_handler_add(INTERRUPT_GPIO,isr,NULL);
 
-
 // Tareas
     xTaskCreate(&readFromQueue, "read from queue", 2048,&queuesStruct,5,NULL );
     xTaskCreate(&write_queue,"write to queue",2048,&brightness,5,NULL);
+    xTaskCreate(&echo_task,"UART",2048,NULL,5,NULL);
 }

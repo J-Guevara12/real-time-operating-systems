@@ -24,6 +24,6 @@ void write_queue(void *queueToWrite){
     while (true){
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &val));
         xQueueSend(*(QueueHandle_t *)(queueToWrite),&val,(TickType_t)10);
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
     }
 }

@@ -57,7 +57,7 @@ void fade(void *pvParameter){
         if(brightness >= 8192 || brightness <= 0)
             delta *= -1;
 
-        vTaskDelay(pdMS_TO_TICKS(50));
+        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
     }
 }
 
