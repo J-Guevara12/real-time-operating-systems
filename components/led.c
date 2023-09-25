@@ -1,6 +1,10 @@
 #include "led.h"
+#define UPDATE_PERIOD 50
 
-static const char* TAG = "LED LIBRARY";
+static const char *TAG = "LED";
+
+extern QueueHandle_t currentChannel;
+extern QueueHandle_t brightness;
 
 ledc_timer_config_t ledc_timer = {
     .speed_mode       = LEDC_MODE,
@@ -44,6 +48,8 @@ void ledc_init_with_pin(int PIN,int channel)
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
+    ESP_LOGI(TAG,"LED initializated");
+
 
 }
 
@@ -62,17 +68,16 @@ void fade(void *pvParameter){
 }
 
 void readFromQueue(void* px_queues){
-    Queues * queues = (Queues *) px_queues;
-    int brightness = 0;
+    int brightness_val = 0;
     int channel = 0;
     int rcv;
     while(true){
-        xQueueReceive(*(QueueHandle_t *)(queues->brightnessQueue),&brightness,(TickType_t)10);
-        if(xQueueReceive(*(QueueHandle_t *)(queues->channelQueue),&rcv,(TickType_t)10)){
+        xQueueReceive(brightness,&brightness_val,(TickType_t)10);
+        if(xQueueReceive(currentChannel,&rcv,(TickType_t)10)){
             channel = (channel + 1)%3;
         }
 
-        ledc_set_duty(LEDC_MODE,channel,2*brightness);
+        ledc_set_duty(LEDC_MODE,channel,2*brightness_val);
         ledc_update_duty(LEDC_MODE,channel);
 
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));

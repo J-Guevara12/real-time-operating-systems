@@ -21,9 +21,4 @@ void fade(void *pvParameter);
 
 void readFromQueue(void* queueToRead);
 
-typedef struct {
-    QueueHandle_t *channelQueue;
-    QueueHandle_t *brightnessQueue;
-} Queues;
-
 #endif

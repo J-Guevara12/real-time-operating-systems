@@ -14,6 +14,6 @@
 
 void adc_init(void);
 
-void write_queue(void *queueToWrite);
+void write_queue();
 
 #endif

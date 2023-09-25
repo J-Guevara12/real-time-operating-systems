@@ -19,6 +19,7 @@
 #define TASK_STACK_SIZE    (4096)
 #define BUF_SIZE (1024)
 
+void uart_init(void);
 void echo_task(void *arg);
 
 #endif

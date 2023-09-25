@@ -1,15 +1,15 @@
 #include "uart.h"
 
-static const char *TAG = "UART TEST";
+static const char *TAG = "UART";
 
 
-void echo_task(void *arg){
+void uart_init(){
     uart_config_t uart_config = {
         .baud_rate = UART_BAUD_RATE,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_CTS_RTS,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
         .rx_flow_ctrl_thresh = 122,
     };
     // Configure UART parameters
@@ -18,7 +18,9 @@ void echo_task(void *arg){
     ESP_ERROR_CHECK(uart_set_pin(UART_PORT_NUM, TXD, RXD, RTS, CTS));
 
     ESP_LOGI(TAG,"Initializated UART");
+}
 
+void echo_task(void *arg){
     uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
 
     while (1) {
@@ -30,6 +32,5 @@ void echo_task(void *arg){
             data[len] = '\0';
             ESP_LOGI(TAG, "Recv str: %s", (char *) data);
         }
-        vTaskDelay(pdMS_TO_TICKS(50));
     }
 }
