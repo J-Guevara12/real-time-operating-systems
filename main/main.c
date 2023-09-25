@@ -9,6 +9,8 @@
 #include "led.h"
 #include "adc.h"
 #include "uart.h"
+#include "thermistor.h"
+
 
 #define INTERRUPT_GPIO 13
 #define R_PIN 15
@@ -20,11 +22,25 @@ static const char* TAG = "MAIN";
 // Declaración de colas
 QueueHandle_t currentChannel;
 QueueHandle_t brightness;
+QueueHandle_t temperatureQueue;
 
 // Interuption
 void isr(void *parameter){
     int msg = 10;
     xQueueSendFromISR(currentChannel,&msg,NULL);
+}
+
+// Medir temperatura y enviar a la cola
+void measureTemperature(void *parameter){
+    while(1){
+        double resistance = adc_read()*10000.0/ 4096.0;
+        double temperature =  calculateTemperature(resistance);
+
+
+        xQueueSend(temperatureQueue, &temperature, portMAX_DELAY);
+        vTaskDelay(pdMS_TO_TICKS(5000)); //Esperar 5 segundos
+
+    }
 }
 
 void app_main()
@@ -58,6 +74,7 @@ void app_main()
     xTaskCreate(&readFromQueue, "read from queue", 2048,NULL,5,NULL );
     xTaskCreate(&write_queue,"write to queue",2048,NULL,5,NULL);
     xTaskCreate(&echo_task,"UART",4096,NULL,5,NULL);
+    xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 5, NULL);
 
     ESP_LOGI(TAG,"Finished Task creation");
 }
