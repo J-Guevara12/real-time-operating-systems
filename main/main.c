@@ -43,7 +43,7 @@ void isr(void *parameter){
 // Medir temperatura y enviar a la cola
 void measureTemperature(void *parameter){
     while(1){
-        double resistance = adc_init()*10000.0/ 4096.0;
+        double resistance = write_queue()*10000.0/ 4096.0;
         double temperature =  calculateTemperature(resistance);
 
 
