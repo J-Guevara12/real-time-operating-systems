@@ -22,7 +22,7 @@ static const char* TAG = "MAIN";
 // Declaración de colas
 QueueHandle_t currentChannel;
 QueueHandle_t brightness;
-QueueHandle_t temperatureQueue;
+QueueHandle_t temperatureQueue; 
 
 // Interuption
 void isr(void *parameter){
@@ -33,7 +33,7 @@ void isr(void *parameter){
 // Medir temperatura y enviar a la cola
 void measureTemperature(void *parameter){
     while(1){
-        double resistance = adc_read()*10000.0/ 4096.0;
+        double resistance = adc_init()*10000.0/ 4096.0;
         double temperature =  calculateTemperature(resistance);
 
 
