@@ -18,7 +18,7 @@
 #define B_PIN 4
 
 
-int rang_max_R = 60;
+int rang_max_R = 60     ;
 int rang_min_R = 45;
 int rang_max_B = 55;
 int rang_min_B = 40;
@@ -33,6 +33,7 @@ static const char* TAG = "MAIN";
 QueueHandle_t currentChannel;
 QueueHandle_t brightness;
 QueueHandle_t temperatureQueue; 
+QueueHandle_t uartDataQueue; // cola uart
 
 // Interuption
 void isr(void *parameter){
@@ -43,7 +44,12 @@ void isr(void *parameter){
 // Medir temperatura y enviar a la cola
 void measureTemperature(void *parameter){
     while(1){
-        double resistance = write_queue()*10000.0/ 4096.0;
+        int adc_value;
+        double temperature;
+
+        ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
+
+        double resistance = ((double)adc_value * 10000.0) / 4096.0;
         double temperature =  calculateTemperature(resistance);
 
 
@@ -53,10 +59,88 @@ void measureTemperature(void *parameter){
     }
 }
 
+
+// Encender o apagar led Respecto a la temperatura
+void controlLEDs(void *parameter) {
+    while (1) {
+        double temperature;
+        if (xQueueReceive(temperatureQueue, &temperature, portMAX_DELAY)) {
+            // Verificar si la temperatura está dentro del rango deseado
+            if (temperature >= rang_min_R && temperature <= rang_max_R) {
+                // Encender LED Rojo
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            } else {
+                // Apagar LED Rojo
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            }
+
+            if (temperature >= rang_min_B && temperature <= rang_max_B) {
+                // Encender LED Azul
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            } else {
+                // Apagar LED Azul
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            }
+
+            if (temperature >= rang_min_G && temperature <= rang_max_G) {
+                // Encender LED Verde
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8192);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            } else {
+                // Apagar LED Verde
+                ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
+                ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+  //Envio de datos del uart para comparacion
+void uartDataHandler(void *parameter) {
+    uint8_t *data = (uint8_t *)malloc(BUF_SIZE);
+
+    while (1) {
+        int len = uart_read_bytes(UART_PORT_NUM, data, (BUF_SIZE - 1), portMAX_DELAY);
+
+        if (len) {
+            data[len] = '\0';
+
+            // Envía los datos UART a la cola
+            xQueueSend(uartDataQueue, data, portMAX_DELAY);
+
+            // Realiza la comparación con los datos de la cola de los Leds
+            char ledData[BUF_SIZE];
+            if (xQueueReceive(brightness, ledData, portMAX_DELAY)) {
+               
+                if (strcmp((char *)data, ledData) == 0) {
+                    
+                     
+                
+                } else {
+                    
+                }
+            }
+        }
+    }
+}
+
 void app_main()
-{
+{ 
+      
+    // Inicialización de la cola para datos UART
+    uartDataQueue = xQueueCreate(10, sizeof(char) * BUF_SIZE);
     currentChannel = xQueueCreate(1,sizeof(int));
     brightness = xQueueCreate(1,sizeof(int));
+    temperatureQueue = xQueueCreate(1, sizeof(double));
 
  // Inicialización de PWM para controlar LEDs  
     ledc_init_with_pin(R_PIN,0);
@@ -85,6 +169,8 @@ void app_main()
     xTaskCreate(&write_queue,"write to queue",2048,NULL,5,NULL);
     xTaskCreate(&echo_task,"UART",4096,NULL,5,NULL);
     xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 5, NULL);
+    xTaskCreate(&controlLEDs, "Control LEDs", 2048, NULL, 5, NULL);
+    
 
     ESP_LOGI(TAG,"Finished Task creation");
 }
