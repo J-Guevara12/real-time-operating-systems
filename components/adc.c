@@ -1,5 +1,6 @@
 #include <adc.h>
 #include "esp_log.h"
+#include "thermistor.h"
 
 #define UPDATE_PERIOD 50
 
@@ -29,6 +30,7 @@ void write_queue(){
     int val;
     while (true){
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &val));
+        double temperature = calculateTemperature((double)val);
         xQueueSend(brightness,&val,(TickType_t)10);
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
     }
