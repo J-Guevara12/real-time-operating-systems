@@ -17,6 +17,16 @@
 #define G_PIN 2
 #define B_PIN 4
 
+
+int rang_max_R = 60;
+int rang_min_R = 45;
+int rang_max_B = 55;
+int rang_min_B = 40;
+int rang_max_G = 45;
+int rang_min_G = 30;
+int threshold_temp = 20;
+int threshold_freq = 1;
+
 static const char* TAG = "MAIN";
 
 // Declaración de colas
