@@ -2,7 +2,7 @@
 #define THERMISTOR_H
 
 // Valores nominales  NTC
-#define NOMINAL_RESISTANCE 47.0
+//#define NOMINAL_RESISTANCE 47.0
 #define NOMINAL_RESISTANCE  2.50
 
 // Coeficientes de Steinhart-Hart  NTC

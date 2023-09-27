@@ -7,6 +7,7 @@
 static const char *TAG = "ADC";
 
 extern QueueHandle_t brightness;
+extern QueueHandle_t temperatureQueue;
 
 adc_oneshot_unit_handle_t adc_handler;
 
@@ -33,5 +34,22 @@ void write_queue(){
         double temperature = calculateTemperature((double)val);
         xQueueSend(brightness,&val,(TickType_t)10);
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
+    }
+}
+
+void measureTemperature(void *parameter){
+    while(1){
+        int adc_value;
+        double temperature;
+
+        ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
+
+        double resistance = ((double)adc_value * 10000.0) / 4096.0;
+        temperature =  calculateTemperature(resistance);
+
+
+        xQueueSend(temperatureQueue, &temperature, portMAX_DELAY);
+        vTaskDelay(pdMS_TO_TICKS(5000)); //Esperar 5 segundos
+
     }
 }

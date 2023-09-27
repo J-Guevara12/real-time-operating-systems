@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include "string.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -42,22 +44,6 @@ void isr(void *parameter){
 }
 
 // Medir temperatura y enviar a la cola
-void measureTemperature(void *parameter){
-    while(1){
-        int adc_value;
-        double temperature;
-
-        ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
-
-        double resistance = ((double)adc_value * 10000.0) / 4096.0;
-        double temperature =  calculateTemperature(resistance);
-
-
-        xQueueSend(temperatureQueue, &temperature, portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(5000)); //Esperar 5 segundos
-
-    }
-}
 
 
 // Encender o apagar led Respecto a la temperatura

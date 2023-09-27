@@ -16,4 +16,6 @@ void adc_init(void);
 
 void write_queue();
 
+void measureTemperature(void *parameter);
+
 #endif
