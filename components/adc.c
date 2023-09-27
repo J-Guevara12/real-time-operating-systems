@@ -47,10 +47,7 @@ void measureTemperature(void *parameter){
         double V = ((double)adc_value * 3.9) / 4096.0;
         temperature =  calculateTemperature(V);
 
-        ESP_LOGI(TAG,"%f",temperature);
-
-
-        xQueueSend(temperatureQueue, &temperature, portMAX_DELAY);
+        xQueueSend(temperatureQueue, &temperature, (TickType_t)10);
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD)); 
     }
 }
