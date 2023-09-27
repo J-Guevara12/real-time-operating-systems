@@ -154,12 +154,10 @@ void app_main()
     gpio_isr_handler_add(INTERRUPT_GPIO,isr,NULL);
 
 // Tareas
-    xTaskCreate(&readFromQueue, "read from queue", 2048,NULL,5,NULL );
-    xTaskCreate(&write_queue,"write to queue",2048,NULL,5,NULL);
     xTaskCreate(&echo_task,"UART",4096,NULL,5,NULL);
     xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 5, NULL);
     xTaskCreate(&controlLEDs, "Control LEDs", 2048, NULL, 5, NULL);
-    xTaskCreate(&controlLEDs ,"Asses Control LEDs", 2048,NULL,5, &controlLEDsTasksHandle);
+    //xTaskCreate(&controlLEDs ,"Asses Control LEDs", 2048,NULL,5, &controlLEDsTasksHandle);
     
 
     ESP_LOGI(TAG,"Finished Task creation");

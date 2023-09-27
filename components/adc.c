@@ -44,12 +44,13 @@ void measureTemperature(void *parameter){
 
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
 
-        double resistance = ((double)adc_value * 10000.0) / 4096.0;
-        temperature =  calculateTemperature(resistance);
+        double V = ((double)adc_value * 3.9) / 4096.0;
+        temperature =  calculateTemperature(V);
+
+        ESP_LOGI(TAG,"%f",V);
 
 
         xQueueSend(temperatureQueue, &temperature, portMAX_DELAY);
-        vTaskDelay(pdMS_TO_TICKS(5000)); //Esperar 5 segundos
-
+        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD)); 
     }
 }

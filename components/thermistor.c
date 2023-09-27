@@ -3,18 +3,16 @@
 
 
 
-double calculateTemperature(double resistance){
-   double inverseRes = 1.0 / resistance;
+double calculateTemperature(double voltage){
+
+   double resistance = RESISTANCE*voltage/(3.3-voltage);
 
   //Ecuacion para  calculo temperatura
-   double  logInverseRes = (long) inverseRes;
-double temperature = 1.0 / (A_COEFFICIENT + B_COEFFICIENT * logInverseRes + C_COEFFICIENT * logInverseRes * logInverseRes * logInverseRes);
+   double temperature = 1/(1/25-(log(NOMINAL_RESISTANCE/resistance)/B));
    
 // Convertir tempertura  °C
-   temperature -=273.15;
 
    return temperature;
-
 }
 
 
