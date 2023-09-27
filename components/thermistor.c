@@ -8,7 +8,7 @@ double calculateTemperature(double resistance){
 
   //Ecuacion para  calculo temperatura
    double  logInverseRes = long(inverseRes);
-   double temperature = 1.0 /(A_COEFFICIENT + B_COEFFICIENT * logInverseRes + C_COEFFICIENT * logInverseRes);
+double temperature = 1.0 / (A_COEFFICIENT + B_COEFFICIENT * logInverseRes + C_COEFFICIENT * logInverseRes * logInverseRes * logInverseRes);
    
 // Convertir tempertura  °C
    temperature -=273.15;
