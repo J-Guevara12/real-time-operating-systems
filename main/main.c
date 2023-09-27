@@ -103,6 +103,7 @@ void controlLEDs(void *parameter) {
 
 
 
+TaskHandle_t controlLEDsTasksHandle = NULL;
 
   //Envio de datos del uart para comparacion
 void uartDataHandler(void *parameter) {
@@ -122,6 +123,8 @@ void uartDataHandler(void *parameter) {
             if (xQueueReceive(brightness, ledData, portMAX_DELAY)) {
                
                 if (strcmp((char *)data, ledData) == 0) {
+
+                    xTaskNotifyGive (controlLEDsTasksHandle);
                     
                      
                 
@@ -170,6 +173,7 @@ void app_main()
     xTaskCreate(&echo_task,"UART",4096,NULL,5,NULL);
     xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 5, NULL);
     xTaskCreate(&controlLEDs, "Control LEDs", 2048, NULL, 5, NULL);
+    xTaskCreate(&controlLEDs ,"Asses Control LEDs", 2048,NULL,5, &controlLEDsTasksHandle);
     
 
     ESP_LOGI(TAG,"Finished Task creation");
