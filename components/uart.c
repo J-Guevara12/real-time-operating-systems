@@ -1,7 +1,9 @@
 #include "uart.h"
+#include "led.h"
 
 static const char *TAG = "UART";
 
+extern QueueHandle_t uartDataQueue; // cola uart
 
 void uart_init(){
     uart_config_t uart_config = {
@@ -31,6 +33,30 @@ void echo_task(void *arg){
         if (len) {
             data[len] = '\0';
             ESP_LOGI(TAG, "Recv str: %s", (char *) data);
+        }
+    }
+}
+
+void send_to_queue(void *arg){
+    uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
+    Intensities intensities = {8191, 8191, 8191};
+
+    while (1) {
+        // Read data from the UART
+        int len = uart_read_bytes(UART_PORT_NUM, data, (BUF_SIZE - 1), 20 / portTICK_PERIOD_MS);
+        if (len) {
+            data[1] = '\0';
+            if(strcmp((char *)&data[0],"r")==0){
+                intensities.r = atoi((char *) &data[2]);
+            }
+            if(strcmp((char *)&data[0],"g")==0){
+                intensities.g = atoi((char *) &data[2]);
+            }
+            if(strcmp((char *)&data[0],"b")==0){
+                intensities.b = atoi((char *) &data[2]);
+            }
+            xQueueSend(uartDataQueue,&intensities,(TickType_t)10);
+            vTaskDelay(pdMS_TO_TICKS(20));
         }
     }
 }

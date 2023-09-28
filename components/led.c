@@ -5,6 +5,8 @@ static const char *TAG = "LED";
 
 extern QueueHandle_t currentChannel;
 extern QueueHandle_t brightness;
+extern QueueHandle_t temperatureQueue; 
+extern QueueHandle_t uartDataQueue; // cola uart
 
 ledc_timer_config_t ledc_timer = {
     .speed_mode       = LEDC_MODE,
@@ -81,5 +83,54 @@ void readFromQueue(void* px_queues){
         ledc_update_duty(LEDC_MODE,channel);
 
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
+    }
+}
+
+void temperatureSemaphore(void* px_queues){
+    double temp;
+    Intensities intensities = {8191, 8191, 8191};
+
+    int r_min = LED_R_MIN;
+    int r_max = LED_R_MAX;
+    int g_min = LED_G_MIN;
+    int g_max = LED_G_MAX;
+    int b_min = LED_B_MIN;
+    int b_max = LED_B_MAX;
+
+
+    while(true){
+        if(xQueueReceive(temperatureQueue,&temp,(TickType_t)0)){
+            if(r_min <= temp && temp <= r_max){
+                ledc_set_duty(LEDC_MODE,0,8191-intensities.r);
+                ledc_update_duty(LEDC_MODE,0);
+            }
+            else{ 
+                ledc_set_duty(LEDC_MODE,0,8191);
+                ledc_update_duty(LEDC_MODE,0);
+            }
+
+            if(g_min <= temp && temp <= g_max){
+                ledc_set_duty(LEDC_MODE,1,8191-intensities.g);
+                ledc_update_duty(LEDC_MODE,1);
+            }
+            else{ 
+                ledc_set_duty(LEDC_MODE,1,8191);
+                ledc_update_duty(LEDC_MODE,1);
+            }
+
+            if(b_min <= temp && temp <= b_max){
+                ledc_set_duty(LEDC_MODE,2,8191-intensities.b);
+                ledc_update_duty(LEDC_MODE,2);
+            }
+            else{ 
+                ledc_set_duty(LEDC_MODE,2,8191);
+                ledc_update_duty(LEDC_MODE,2);
+            }
+        }
+
+        xQueueReceive(uartDataQueue,&intensities,(TickType_t)10);
+
+        //vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

@@ -2,7 +2,7 @@
 #include "esp_log.h"
 #include "thermistor.h"
 
-#define UPDATE_PERIOD 50
+#define UPDATE_PERIOD 20
 
 static const char *TAG = "ADC";
 

@@ -9,6 +9,8 @@
   "files.associations": {
     "stdio.h": "c",
     "adc.h": "c",
-    "freertos.h": "c"
+    "freertos.h": "c",
+    "cstring": "c",
+    "typeinfo": "c"
   }
 }

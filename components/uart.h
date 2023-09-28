@@ -8,6 +8,7 @@
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 #include "esp_log.h"
+#include "string.h"
 
 #define TXD (1)
 #define RXD (3)
@@ -21,5 +22,6 @@
 
 void uart_init(void);
 void echo_task(void *arg);
+void send_to_queue(void *arg);
 
 #endif

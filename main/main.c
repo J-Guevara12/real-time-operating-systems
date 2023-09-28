@@ -15,9 +15,6 @@
 
 
 #define INTERRUPT_GPIO 13
-#define R_PIN 15
-#define G_PIN 2
-#define B_PIN 4
 
 static const char* TAG = "MAIN";
 
@@ -51,7 +48,7 @@ void app_main()
 { 
       
     // Inicialización de la cola para datos UART
-    uartDataQueue = xQueueCreate(10, sizeof(char) * BUF_SIZE);
+    uartDataQueue = xQueueCreate(1, sizeof(Intensities));
     temperatureQueue = xQueueCreate(2, sizeof(double));
     printSecondsQueue = xQueueCreate(1,sizeof(bool));
 
@@ -78,11 +75,10 @@ void app_main()
     gpio_isr_handler_add(INTERRUPT_GPIO,isr,NULL);
 
 // Tareas
-    //xTaskCreate(&echo_task,"UART",4096,NULL,5,NULL);
     xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 4, NULL);
     xTaskCreate(&printTemperature,"Imprimir temperatura cada x segundos",2048,NULL,5,NULL);
-    //xTaskCreate(&controlLEDs, "Control LEDs", 2048, NULL, 5, NULL);
-    //xTaskCreate(&controlLEDs ,"Asses Control LEDs", 2048,NULL,5, &controlLEDsTasksHandle);
+    xTaskCreate(&temperatureSemaphore,"Semaforo de temperatura",2048,NULL,6,NULL);
+    xTaskCreate(&send_to_queue,"Recibe data del UART",2048,NULL,3,NULL);
     
 
     ESP_LOGI(TAG,"Finished Task creation");
