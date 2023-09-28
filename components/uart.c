@@ -3,8 +3,12 @@
 
 static const char *TAG = "UART";
 
+
+//Llamado de cola  Uart  para enviar datos a otras tareas
 extern QueueHandle_t uartDataQueue; // cola uart
 
+
+//Inicializacion de la UART
 void uart_init(){
     uart_config_t uart_config = {
         .baud_rate = UART_BAUD_RATE,
@@ -14,7 +18,7 @@ void uart_init(){
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
         .rx_flow_ctrl_thresh = 122,
     };
-    // Configure UART parameters
+    // Configuracion de los parametros de la UART
     ESP_ERROR_CHECK(uart_driver_install(UART_PORT_NUM,BUF_SIZE*2,0,0,NULL,0));
     ESP_ERROR_CHECK(uart_param_config(UART_PORT_NUM, &uart_config));
     ESP_ERROR_CHECK(uart_set_pin(UART_PORT_NUM, TXD, RXD, RTS, CTS));
@@ -22,13 +26,15 @@ void uart_init(){
     ESP_LOGI(TAG,"Initializated UART");
 }
 
+
+// Tarea: Leer datos de la UART y  enviarlos de vuelta
 void echo_task(void *arg){
     uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
 
     while (1) {
-        // Read data from the UART
+        // Leer datos de la UART
         int len = uart_read_bytes(UART_PORT_NUM, data, (BUF_SIZE - 1), 20 / portTICK_PERIOD_MS);
-        // Write data back to the UART
+        // Escribir datos de vuelta en la UART
         uart_write_bytes(UART_PORT_NUM, (const char *) data, len);
         if (len) {
             data[len] = '\0';
@@ -37,12 +43,14 @@ void echo_task(void *arg){
     }
 }
 
+
+//Tarea: Leer  datos de la UART y enviarlos de nuevo
 void send_to_queue(void *arg){
     uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
     Intensities intensities = {8191, 8191, 8191};
 
     while (1) {
-        // Read data from the UART
+        // Leer datos de la UART
         int len = uart_read_bytes(UART_PORT_NUM, data, (BUF_SIZE - 1), 20 / portTICK_PERIOD_MS);
         if (len) {
             data[1] = '\0';
@@ -55,6 +63,8 @@ void send_to_queue(void *arg){
             if(strcmp((char *)&data[0],"b")==0){
                 intensities.b = atoi((char *) &data[2]);
             }
+
+            //Enviar intensidades a la Cola UART
             xQueueSend(uartDataQueue,&intensities,(TickType_t)10);
             vTaskDelay(pdMS_TO_TICKS(20));
         }
