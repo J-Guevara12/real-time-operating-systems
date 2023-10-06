@@ -1,2 +1,3 @@
-idf_component_register(SRCS "main.c" "../components/led.c" "../components/adc.c" "../components/uart.c" "../components/thermistor.c"
-                    INCLUDE_DIRS "." "../components/")
+idf_component_register(SRCS "../components/rgb_led.c"  "../components/wifi_app.c" "../components/http_server.c" "main.c" "../components/led.c" "../components/adc.c" "../components/uart.c" "../components/thermistor.c"
+                    INCLUDE_DIRS "." "../components/"
+                    EMBED_FILES ../webpage/app.css ../webpage/app.js ../webpage/favicon.ico ../webpage/index.html ../webpage/jquery-3.3.1.min.js)
