@@ -16,7 +16,11 @@
 typedef void (*wifi_connected_event_callback_t)(void);
 
 // WiFi application settings
+<<<<<<< HEAD
 #define WIFI_AP_SSID				"Juanito"			// AP name
+=======
+#define WIFI_AP_SSID				"ESP32_AP"			// AP name
+>>>>>>> adbe57ad388fdc82ef989b57eb6b58867e0cda19
 #define WIFI_AP_PASSWORD			"password"			// AP password
 #define WIFI_AP_CHANNEL				1					// AP channel
 #define WIFI_AP_SSID_HIDDEN			0					// AP visibility

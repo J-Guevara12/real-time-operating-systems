@@ -2,15 +2,19 @@
 #include "esp_log.h"
 #include "thermistor.h"
 
-#define UPDATE_PERIOD 20
+#define UPDATE_PERIOD 20   // Periodo de actulizacion 20 milisegundos
 
 static const char *TAG = "ADC";
 
-extern QueueHandle_t brightness;
-extern QueueHandle_t temperatureQueue;
+
+//llamado de colas externas  
+extern QueueHandle_t brightness;  // Cola para la intensidad del LED
+extern QueueHandle_t temperatureQueue; // Cola para la temperatura
 
 adc_oneshot_unit_handle_t adc_handler;
 
+
+// Inicializacion del ADC
 void adc_init(void){
     adc_oneshot_unit_init_cfg_t init_config1 = {
         .unit_id = ADC_UNIT,
@@ -27,16 +31,21 @@ void adc_init(void){
     ESP_LOGI(TAG,"ADC intialized");
 }
 
+
+//Tarea: Escribe valores en la cola a  utilizar
 void write_queue(){
     int val;
     while (true){
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &val));
         double temperature = calculateTemperature((double)val);
-        xQueueSend(brightness,&val,(TickType_t)10);
-        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));
+        xQueueSend(brightness,&val,(TickType_t)10);  // Envia el valor de la intesidad del lED a la cola
+        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD)); // Tiempo de espera para la proxima lectura
     }
 }
 
+
+
+//Tarea:  Mide temperatura y envia a respectiva cola
 void measureTemperature(void *parameter){
     while(1){
         int adc_value;
@@ -44,10 +53,11 @@ void measureTemperature(void *parameter){
 
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
 
+        // Convierte el valor ADC a voltaje (V) y luego a temperatura 
         double V = ((double)adc_value * 3.9) / 4096.0;
         temperature =  calculateTemperature(V);
 
-        xQueueSend(temperatureQueue, &temperature, (TickType_t)10);
-        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD)); 
+        xQueueSend(temperatureQueue, &temperature, (TickType_t)10);  //Envia temperatura a la cola
+        vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD));  // Espera antes de medir de nuevo
     }
 }
