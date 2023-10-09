@@ -7,7 +7,7 @@ const setTimeButton = document.getElementById('set-time');
 const valueInput = document.getElementById('value-input');
 const sendValueButton = document.getElementById('send-value');
 
-// Función para actualizar información UART
+//  actualizar información en la UART
 function updateUARTInfo(data) {
     uartData.textContent = data;
 }
@@ -26,7 +26,7 @@ function updateTemperatureAndLED(temperature) {
     }
 }
 
-//  datos UART 
+//  datos UART  mostrados
 setInterval(() => {
     const simulatedTemperature = Math.floor(Math.random() * 30) + 20;
     const simulatedUARTData = 'hola hola';

@@ -27,7 +27,7 @@ void uart_init(){
 }
 
 
-// Tarea: Leer datos de la UART y  enviarlos de vuelta
+// Tarea: Leer datos de la UART y  env  arlos de vuelta
 void echo_task(void *arg){
     uint8_t *data = (uint8_t *) malloc(BUF_SIZE);
 

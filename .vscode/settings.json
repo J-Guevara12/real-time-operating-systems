@@ -12,6 +12,9 @@
     "freertos.h": "c",
     "cstring": "c",
     "typeinfo": "c",
-    "esp_log.h": "c"
+    "esp_log.h": "c",
+    "nvs_flash.h": "c",
+    "wifi_app.h": "c",
+    "esp_sntp.h": "c"
   }
 }
