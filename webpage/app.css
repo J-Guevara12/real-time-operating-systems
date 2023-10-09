@@ -1,71 +1,62 @@
-
-
 body {
-    background-color: #f1f1f1;
-    font-family: HelveticaNeueRegular, HelveticaNeue-Regular, "Helvetica Neue Regular", HelveticaNeue, "Helvetica Neue", Helvetica, Arial;
-    color: #0272B7;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 3px solid #fafa0d;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #3f1571;
 }
 
 h1 {
-    display: block;
-    text-align: center;
-    margin: 0;
-    padding: 10px;
-    font-size: 1.7em;
-    color: #1d3557;
+    color: #fafa0d;
+    margin-bottom: 20px;
 }
 
-h2 {
-	font-size: 1.4em;
-    color: #1d3557;
-}
-
-h3 {
-	font-size: 1.2em;
-    color: #1d3557;
-}
-
-h4 {
-	font-size: 1em;
-    color: #1d3557;
-}
-
-#latest_firmware, #latest_firmware_label {
-	display:inline;
-}
-#latest_firmware {
-	color: #1d3557;
-}	
-
-.buttons {
-    padding: 5px;
-}
-
-input[type="button"] {
-	font-size: 12px;
-	border: 0;
-    line-height: 2;
-    padding: 0 5px;
-    text-align: center;
-    color: #ffffff;
-    text-shadow: 1px 1px 1px #000;
+.box {
+    width: 300px;
+    padding: 20px;
+    margin: 10px;   
+    background-color: #fff;
+    border: 3px solid #fa0000;
     border-radius: 10px;
-    background-color: RGBA(106,125,144,0.35);
-    background-image: linear-gradient(to top left,
-                                      rgba(0, 0, 0, .2),
-                                      rgba(0, 0, 0, .2) 30%,
-                                      rgba(0, 0, 0, 0));
-    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
-                inset -2px -2px 3px rgba(0, 0, 0, .6);
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
 }
 
-input[type="button"]:hover {
-    background-color: RGBA(112,164,222,0.68);
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 10px;
 }
 
-input[type="button"]:active {
-    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
-                inset 2px 2px 3px rgba(0, 0, 0, .6);
+#led-circle {
+    background-color: red; 
+}
+
+.arrow-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #fa0000;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
 
