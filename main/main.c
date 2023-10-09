@@ -17,7 +17,7 @@ void obtanin_time(){
 
     time_t now = 0;
     struct tm timeinfo {0};
-	while (timeinfo.tm_year < (2020 - 1900)) {
+	while (timeinfo.tm_year < (2023 - 2000)) {
         ESP_LOGI(TAG, "Esperando  hora del servidor NTP.");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         time(&now);
