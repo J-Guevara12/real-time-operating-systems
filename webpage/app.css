@@ -7,6 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+
 }
 
 .container {
@@ -24,6 +25,11 @@ h1 {
     margin-bottom: 20px;
 }
 
+h2 {
+    color: red;
+    margin-bottom: 20px;
+}
+
 .box {
     width: 300px;
     padding: 20px;
@@ -38,7 +44,7 @@ h1 {
 }
 
 .circle {
-    width: 100px;
+    width: 100px; 
     height: 100px;
     border-radius: 50%;
     margin: 10px;
@@ -58,9 +64,6 @@ h1 {
     cursor: pointer;
     margin-top: 20px;
 }
-
-
-
 
 
 

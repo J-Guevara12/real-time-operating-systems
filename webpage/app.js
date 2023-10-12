@@ -1,11 +1,46 @@
 
-// Elementntos del HTML
+// Elemenetos del HTML
 const uartData = document.getElementById('uart-data');
 const temperatureData = document.getElementById('temperature-data');
 const ledCircle = document.getElementById('led-circle');
 const setTimeButton = document.getElementById('set-time');
 const valueInput = document.getElementById('value-input');
-const sendValueButton = document.getElementById('send-value');
+const sendBrihtnessButton = document.getElementById('send-value-brightness');
+var sendCredentialsButton = document.getElementById("send-credentials");
+var ssdiInput =document.getElementById("ssdi-input");
+var passwordInput = document.getElementById("value-password");
+
+
+
+
+
+//Recive e impirmi los datos que se incresaron en los credenciales
+sendCredentialsButton.addEventListener("click", function() {
+
+    var ssdiValue = ssdiInput.value;
+    var passwordValue = passwordInput.value;
+
+    console.log("Value of the ssdi; "+ ssdiValue);
+    console.log("Value of Password: "+ passwordValue);
+})
+
+//Recive e imprime las veces que se oprimio el boton
+setTimeButton.addEventListener("click", function (){
+    console.log("print increase");
+
+})
+
+
+// Recive el valor para modificar la intensidad de LED
+sendBrihtnessButton.addEventListener("click", function(){
+    var brightnessValue = valueInput.value
+
+    console.log("Value of Brigthness: "+ brightnessValue);
+
+
+})
+
+
 
 //  actualizar información en la UART
 function updateUARTInfo(data) {
@@ -34,14 +69,6 @@ setInterval(() => {
     updateTemperatureAndLED(simulatedTemperature);
 }, 5000);  // Actualiza cada 5 segundos (
 
-// Boton que aumenta la  frecuencia
-setTimeButton.addEventListener('click', () => {
 
-});
 
-// Recive el valor para modificar la intensidad de LED
-sendValueButton.addEventListener('click', () => {
-    const value = valueInput.value;
-    
-});
 

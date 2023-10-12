@@ -8,34 +8,44 @@
     <div class="container">
         <h1>Proyecto ESP32</h1>
 
+        <div class="Credentilas">
+
+            <h1> Credentials </h1>
+            <input type="text" id="ssdi-input" placeholder="SSDI" >
+            <input type="password" id="value-password" placeholder="Password">
+            <button id="send-credentials">Send</button>
+        
+        </div>
+
         <!-- Caja donde se van a ver los datos de la UART-->
         <div class="box uart-info-box">
             <h2>Datos de la  UART:</h2>
             <p id="uart-data"></p>
         </div>
 
-        <!-- Bonton que va a cambiar la frrecuencia de la visualizacion de la UART -->
-        <div class="button">
-            <h2>Aumentar Frecuencia de impresion</h2>
+        <!-- Boton que va a cambiar la frrecuencia de la visualizacion de la UART -->
+        <div class="button frecuency-print">
+            <h2>Increase printing frequency</h2>
             <button id="set-time" class="arrow-button">➔</button>
         </div>
         
 
         <!-- Mostrar temperatura -->
         <div class="box temperature-box">
-            <h2>Temperatura:</h2>
+            <h2>Temperature:</h2>
             <div class="circle" id="led-circle"></div>
             <p id="temperature-data">0 °C</p>
         </div>
 
         <!-- Ingresar valor y enviar -->
         <div class="box">
-            <h2>Intensidad del LED:</h2>
-            <input type="text" id="value-input" placeholder="Ingresar el valor de intensidad del LED">
-            <button id="send-value">Enviar</button>
+            <h2>LED Brightness:</h2>
+            <input type="text" id="value-input" placeholder="Enter the LED intensity value">
+            <button id="send-value-brightness">Send</button>
         </div>
     </div> 
     <script src="app.js"></script>
 </body>
 </html>
 
+>
