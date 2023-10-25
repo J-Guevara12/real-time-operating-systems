@@ -24,6 +24,8 @@ static TaskHandle_t task_http_server_monitor = NULL;
 // Queue handle used to manipulate the main queue of events
 static QueueHandle_t http_server_monitor_queue_handle;
 
+extern QueueHandle_t temperatureQueue;
+
 // Embedded files: JQuery, index.html, app.css, app.js and favicon.ico files
 extern const uint8_t jquery_3_3_1_min_js_start[]	asm("_binary_jquery_3_3_1_min_js_start");
 extern const uint8_t jquery_3_3_1_min_js_end[]		asm("_binary_jquery_3_3_1_min_js_end");
@@ -162,6 +164,20 @@ static esp_err_t http_server_favicon_ico_handler(httpd_req_t *req)
 	return ESP_OK;
 }
 
+static esp_err_t http_server_temperature_handler(httpd_req_t *req)
+{
+	ESP_LOGI(TAG, "temperature requested");
+
+	httpd_resp_set_type(req, "application/json");
+    char data[30];
+    double temp;
+    xQueueReceive(temperatureQueue,&temp,(TickType_t)10);
+    sprintf(data,"{\"temperature\": \"%f\"}",temp);
+	httpd_resp_send(req, data, strlen(data));
+
+	return ESP_OK;
+}
+
 
 
 /**
@@ -249,6 +265,14 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &favicon_ico);
+
+		httpd_uri_t temperature_json = {
+				.uri = "/api/temperature",
+				.method = HTTP_GET,
+				.handler = http_server_temperature_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &temperature_json);
 
 		return http_server_handle;
 	}

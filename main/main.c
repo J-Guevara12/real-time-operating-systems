@@ -154,15 +154,7 @@ void app_main(void)
 	wifi_app_start();
 
     //star ntp
-    Set_SystemTime_SNTP();
-
-    while(1)  {
-
-		Get_current_date_time(Current_Date_Time);
-		printf("Fecha y hora actual = %s\n",Current_Date_Time);
-		vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-
+    //Set_SystemTime_SNTP();
 
     //----------------------------------------------------------------------------
 	//            MEDIR TEMPERATURA
@@ -172,16 +164,8 @@ void app_main(void)
     temperatureQueue = xQueueCreate(2, sizeof(double));
     printSecondsQueue = xQueueCreate(1,sizeof(bool));
 
-    // Inicialización de PWM para controlar LEDs  
-    ledc_init_with_pin(R_PIN,0);
-    ledc_init_with_pin(G_PIN,1);
-    ledc_init_with_pin(B_PIN,2);
-
     //Inicializacion del ADC
     adc_init();
-
-     //Inicialización UART
-    uart_init();
 
     //Configutacion de interrupciones (Pines)
     gpio_set_direction(INTERRUPT_GPIO,GPIO_MODE_INPUT);
@@ -197,8 +181,6 @@ void app_main(void)
      // Tareas
     xTaskCreate(&measureTemperature, "measure Temperature NTC", 2048, NULL, 4, NULL);
     xTaskCreate(&printTemperature,"Imprimir temperatura cada x segundos",2048,NULL,5,NULL);
-    xTaskCreate(&temperatureSemaphore,"Semaforo de temperatura",2048,NULL,6,NULL);
-    xTaskCreate(&send_to_queue,"Recibe data del UART",2048,NULL,3,NULL);
     
 
     ESP_LOGI(TAG,"Finished Task creation");

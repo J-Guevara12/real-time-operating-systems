@@ -37,7 +37,6 @@ void write_queue(){
     int val;
     while (true){
         ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &val));
-        double temperature = calculateTemperature((double)val);
         xQueueSend(brightness,&val,(TickType_t)10);  // Envia el valor de la intesidad del lED a la cola
         vTaskDelay(pdMS_TO_TICKS(UPDATE_PERIOD)); // Tiempo de espera para la proxima lectura
     }
@@ -51,7 +50,7 @@ void measureTemperature(void *parameter){
         int adc_value;
         double temperature;
 
-        ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
+        adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value);
 
         // Convierte el valor ADC a voltaje (V) y luego a temperatura 
         double V = ((double)adc_value * 3.9) / 4096.0;
