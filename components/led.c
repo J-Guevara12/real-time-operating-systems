@@ -9,6 +9,7 @@ static const char *TAG = "LED";
 
 // llamado de colas para  la comunicacion entre tareas
     ;
+QueueHandle_t currentChannel;
 extern QueueHandle_t brightness;
 extern QueueHandle_t temperatureQueue; 
 extern QueueHandle_t uartDataQueue; // cola uart
@@ -138,7 +139,7 @@ void temperatureSemaphore(void* px_queues){
             }
 
             if(b_min <= temp && temp <= b_max){
-                ledc_set_duty(LEDC_MODE,2,8191-inten    sities.b);
+                ledc_set_duty(LEDC_MODE,2,8191-intensities.b);
                 ledc_update_duty(LEDC_MODE,2);
             }
             else{ 

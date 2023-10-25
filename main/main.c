@@ -1,4 +1,3 @@
-
 #include "nvs_flash.h"
 #include "wifi_app.h"
 #include "esp_sntp.h"
@@ -58,6 +57,11 @@ void printTemperature(){
 
 //              DECLARACION E IMPLEMTACION NTP
 
+void time_sync_notification_cb(struct timeval *tv)
+{
+    ESP_LOGI(TAG, "Notification of a time synchronization event");
+}
+
 char Current_Date_Time[100];
 
 
@@ -82,13 +86,13 @@ char Current_Date_Time[100];
 
 	static void initialize_sntp(void){
 		ESP_LOGI(TAG, "Initializing SNTP");
-		sntp_setoperatingmode(SNTP_OPMODE_POLL);
-		sntp_setservername(0, "0.co.pool.ntp.org");
+		esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+		esp_sntp_setservername(0, "0.co.pool.ntp.org");
 		sntp_set_time_sync_notification_cb(time_sync_notification_cb);
 	#ifdef CONFIG_SNTP_TIME_SYNC_METHOD_SMOOTH
 		sntp_set_sync_mode(SNTP_SYNC_MODE_SMOOTH);
 	#endif
-		sntp_init();
+		esp_sntp_init();
 	}
 
 	static void obtain_time(void){
@@ -125,6 +129,7 @@ char Current_Date_Time[100];
 				time(&now);
 			}
 	}
+
 
 //------------------------------------------------------------------------------
 
