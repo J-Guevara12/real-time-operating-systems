@@ -1,4 +1,3 @@
-
 // Elemenetos del HTML
 const uartData = document.getElementById('uart-data');
 const temperatureData = document.getElementById('temperature-data');
@@ -10,11 +9,7 @@ var sendCredentialsButton = document.getElementById("send-credentials");
 var ssdiInput =document.getElementById("ssdi-input");
 var passwordInput = document.getElementById("value-password");
 
-
-
-
-
-//Recive e impirmi los datos que se incresaron en los credenciales
+//Recibe e impirme los datos que se incresaron en los credenciales
 sendCredentialsButton.addEventListener("click", function() {
 
     var ssdiValue = ssdiInput.value;
@@ -29,6 +24,12 @@ setTimeButton.addEventListener("click", function (){
     console.log("print increase");
 
 })
+
+async function getTemperature() {
+  const response = await fetch("api/temperature");
+  const res = await response.json();
+  return res.temperature;
+}
 
 
 // Recive el valor para modificar la intensidad de LED
@@ -62,11 +63,11 @@ function updateTemperatureAndLED(temperature) {
 }
 
 //  datos UART  mostrados
-setInterval(() => {
-    const simulatedTemperature = Math.floor(Math.random() * 30) + 20;
+setInterval(async () => {
+    const temperature = await getTemperature();
     const simulatedUARTData = 'hola hola';
     updateUARTInfo(simulatedUARTData);
-    updateTemperatureAndLED(simulatedTemperature);
+    updateTemperatureAndLED(temperature);
 }, 5000);  // Actualiza cada 5 segundos (
 
 

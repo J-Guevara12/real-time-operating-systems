@@ -1,4 +1,5 @@
 #include <adc.h>
+#include "esp_err.h"
 #include "esp_log.h"
 #include "thermistor.h"
 
@@ -46,13 +47,13 @@ void write_queue(){
 
 //Tarea:  Mide temperatura y envia a respectiva cola
 void measureTemperature(void *parameter){
+    int adc_value;
+    double temperature;
     while(1){
-        int adc_value;
-        double temperature;
 
-        adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value);
+        ESP_ERROR_CHECK(adc_oneshot_read(adc_handler, ADC_CHAN, &adc_value));
 
-        // Convierte el valor ADC a voltaje (V) y luego a temperatura 
+        // Convierte el valor ADC a tensión (V) y luego a temperatura 
         double V = ((double)adc_value * 3.9) / 4096.0;
         temperature =  calculateTemperature(V);
 
