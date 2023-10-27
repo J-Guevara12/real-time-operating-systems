@@ -32,15 +32,6 @@ async function getTemperature() {
 }
 
 
-// Recive el valor para modificar la intensidad de LED
-sendBrihtnessButton.addEventListener("click", function(){
-    var brightnessValue = valueInput.value
-
-    console.log("Value of Brigthness: "+ brightnessValue);
-
-
-})
-
 
 
 //  actualizar información en la UART
@@ -72,4 +63,56 @@ setInterval(async () => {
 
 
 
+// datos del RGB
 
+document.getElementById("redSlider").onchange = function() {
+    const value = this.value;
+    document.getElementById("red-slider-value").textContent = value;
+    console.log(`Valor R: ${value}`);
+    sendRGBvalues();
+  };
+
+  document.getElementById("greenSlider").onchange = function() {
+    const value = this.value;
+    document.getElementById("green-slider-value").textContent = value;
+    console.log(`Valor G: ${value}`);
+    sendRGBvalues(); 
+};
+
+
+  document.getElementById("blueSlider").onchange = function() {
+    const value = this.value;
+    document.getElementById("blue-slider-value").textContent = value;
+    console.log(`Valor B: ${value}`);
+    sendRGBvalues();
+};
+
+
+function sendRGBvalues(){
+    const redValue = document.getElementById ("redSlider").value;
+    const greenValue = document.getElementById("greenSlider").value;
+    const blueValue = document.getElementById("blueSlider").value;
+};
+
+
+// envio y solitud del  servidor
+async function sendRGBValues() {
+    const redValue = document.getElementById("redSlider").value;
+    const greenValue = document.getElementById("greenSlider").value;
+    const blueValue = document.getElementById("blueSlider").value;
+  
+    const data = {
+      red: redValue,
+      green: greenValue,
+      blue: blueValue
+    };
+
+    const response = await fetch("api/ledRGB",{
+    method: "POST",headers:{ "Content-Type":"RGBdata/json"},
+    body: JSON.stringify(data)});
+    if (response.ok){
+        const reslt = await response.json();
+        return reslt;
+
+    }
+}
