@@ -26,6 +26,9 @@ static QueueHandle_t http_server_monitor_queue_handle;
 
 extern QueueHandle_t temperatureQueue;
 
+extern QueueHandle_t brightness;
+
+
 // Embedded files: JQuery, index.html, app.css, app.js and favicon.ico files
 extern const uint8_t jquery_3_3_1_min_js_start[]	asm("_binary_jquery_3_3_1_min_js_start");
 extern const uint8_t jquery_3_3_1_min_js_end[]		asm("_binary_jquery_3_3_1_min_js_end");
@@ -180,6 +183,25 @@ static esp_err_t http_server_temperature_handler(httpd_req_t *req)
 
 
 
+static esp_err_t http_server_brightness_handler(httpd_req_t *req)
+{
+	ESP_LOGI(TAG, "brightness requested");
+
+	if (req->method == HTTP_POST){
+		char data [30];
+		double brightness;
+		xQueueReceive(brightness,&brightness,(TickType_t)10);
+		sprintf(data,"{\"brightness\": \"%f\"}",brightness);
+		httpd_resp_type(req, "application/json");
+		htppd_resp_send(req,data,strlen(data));
+		return ESP_OK;
+    }else{
+		htppd_resp_send_404(req);
+		return ESP_Ok;
+	}
+}
+
+
 /**
  * Sets up the default httpd server configuration.
  * @return http server instance handle if successful, NULL otherwise.
@@ -273,6 +295,18 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &temperature_json);
+
+
+		httpd_uri_t brightness_json = {
+				.uri = "/api/temperature",
+				.method = HTTP_POST,
+				.handler = http_server_brightness_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &brightness_json);
+
+
+		
 
 		return http_server_handle;
 	}
