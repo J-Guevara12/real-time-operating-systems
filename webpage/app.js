@@ -107,8 +107,8 @@ async function sendRGBValues() {
       blue: blueValue
     };
 
-    const response = await fetch("api/ledRGB",{
-    method: "POST",headers:{ "Content-Type":"RGBdata/json"},
+    const response = await fetch("api/brightness",{
+    method: "POST",headers:{ "Content-Type":"application/json"},
     body: JSON.stringify(data)});
     if (response.ok){
         const reslt = await response.json();
