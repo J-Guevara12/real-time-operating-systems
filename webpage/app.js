@@ -89,9 +89,9 @@ document.getElementById("redSlider").oninput = function() {
 
 // envio y solitud del  servidor
 async function sendRGBvalues() {
-    const redValue = document.getElementById("redSlider").value;
-    const greenValue = document.getElementById("greenSlider").value;
-    const blueValue = document.getElementById("blueSlider").value;
+    const redValue = parseInt(document.getElementById("redSlider").value);
+    const greenValue = parseInt(document.getElementById("greenSlider").value);
+    const blueValue = parseInt(document.getElementById("blueSlider").value);
   
     const data = {
       red: redValue,

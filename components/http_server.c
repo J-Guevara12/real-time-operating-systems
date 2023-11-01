@@ -174,7 +174,7 @@ static esp_err_t http_server_temperature_handler(httpd_req_t *req)
 	ESP_LOGI(TAG, "temperature requested");
 
 	httpd_resp_set_type(req, "application/json");
-    char data[30];
+    char data[100];
     double temp;
     xQueueReceive(temperatureQueue,&temp,(TickType_t)10);
     sprintf(data,"{\"temperature\": \"%f\"}",temp);
@@ -188,11 +188,32 @@ static esp_err_t http_server_temperature_handler(httpd_req_t *req)
 static esp_err_t http_server_brightness_handler(httpd_req_t *req)
 {
 	ESP_LOGI(TAG, "brightness requested");
-
 	if (req->method == HTTP_POST){
-        rgb_led_set_colors(0,0,255);
-		char data [30];
+        int total_len = req->content_len;
+        int cur_len = 0;
+        int received = 0;
+		char data [100];
+        while (cur_len < total_len){
+            received = httpd_req_recv(req, data + cur_len, total_len);
+            if (received<0){
+                httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to post control value");
+                return ESP_FAIL;
+            }
+            cur_len += received;
+        }
+        data[total_len] = '\0';
+
+        cJSON *root = cJSON_Parse(data);
+        int red = cJSON_GetObjectItem(root, "red")->valueint;
+        int green = cJSON_GetObjectItem(root, "green")->valueint;
+        int blue = cJSON_GetObjectItem(root, "blue")->valueint;
+
+        ESP_LOGI(TAG, "%d, %d, %d", red, green, blue);
+
+        rgb_led_set_colors(red,green,blue);
+
         ESP_LOGI(TAG,"brightness requested");
+        httpd_resp_sendstr(req, "OK");
 		return ESP_OK;
     }else{
 		httpd_resp_send_404(req);
