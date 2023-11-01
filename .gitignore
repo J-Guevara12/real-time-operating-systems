@@ -2,5 +2,7 @@ build/
 sdkconfig
 sdkconfig.old
 .vscode/settings.json
-.vscode
+.devcontainer/
+.cache/
+.vscode/
 
