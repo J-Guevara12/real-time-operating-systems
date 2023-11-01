@@ -15,7 +15,7 @@ sendCredentialsButton.addEventListener("click", function() {
     var ssdiValue = ssdiInput.value;
     var passwordValue = passwordInput.value;
 
-    console.log("Value of the ssdi; "+ ssdiValue);
+    console.log("Value of the ssid; "+ ssdiValue);
     console.log("Value of Password: "+ passwordValue);
 })
 
@@ -65,14 +65,14 @@ setInterval(async () => {
 
 // datos del RGB
 
-document.getElementById("redSlider").onchange = function() {
+document.getElementById("redSlider").oninput = function() {
     const value = this.value;
     document.getElementById("red-slider-value").textContent = value;
     console.log(`Valor R: ${value}`);
     sendRGBvalues();
   };
 
-  document.getElementById("greenSlider").onchange = function() {
+  document.getElementById("greenSlider").oninput = function() {
     const value = this.value;
     document.getElementById("green-slider-value").textContent = value;
     console.log(`Valor G: ${value}`);
@@ -80,23 +80,15 @@ document.getElementById("redSlider").onchange = function() {
 };
 
 
-  document.getElementById("blueSlider").onchange = function() {
+  document.getElementById("blueSlider").oninput = function() {
     const value = this.value;
     document.getElementById("blue-slider-value").textContent = value;
     console.log(`Valor B: ${value}`);
     sendRGBvalues();
 };
 
-
-function sendRGBvalues(){
-    const redValue = document.getElementById ("redSlider").value;
-    const greenValue = document.getElementById("greenSlider").value;
-    const blueValue = document.getElementById("blueSlider").value;
-};
-
-
 // envio y solitud del  servidor
-async function sendRGBValues() {
+async function sendRGBvalues() {
     const redValue = document.getElementById("redSlider").value;
     const greenValue = document.getElementById("greenSlider").value;
     const blueValue = document.getElementById("blueSlider").value;
@@ -112,7 +104,7 @@ async function sendRGBValues() {
     body: JSON.stringify(data)});
     if (response.ok){
         const reslt = await response.json();
+        console.log(reslt)
         return reslt;
-
     }
 }

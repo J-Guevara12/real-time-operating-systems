@@ -7,10 +7,12 @@
 
 #include "esp_http_server.h"
 #include "esp_log.h"
+#include "cJSON.h"
 
 #include "http_server.h"
 #include "tasks_common.h"
 #include "wifi_app.h"
+#include "rgb_led.h"
 
 // Tag used for ESP serial console messages
 static const char TAG[] = "http_server";
@@ -188,16 +190,13 @@ static esp_err_t http_server_brightness_handler(httpd_req_t *req)
 	ESP_LOGI(TAG, "brightness requested");
 
 	if (req->method == HTTP_POST){
+        rgb_led_set_colors(0,0,255);
 		char data [30];
-		double brightness;
-		xQueueReceive(brightness,&brightness,(TickType_t)10);
-		sprintf(data,"{\"brightness\": \"%f\"}",brightness);
-		httpd_resp_type(req, "application/json");
-		htppd_resp_send(req,data,strlen(data));
+        ESP_LOGI(TAG,"brightness requested");
 		return ESP_OK;
     }else{
-		htppd_resp_send_404(req);
-		return ESP_Ok;
+		httpd_resp_send_404(req);
+		return ESP_OK;
 	}
 }
 
@@ -298,7 +297,7 @@ static httpd_handle_t http_server_configure(void)
 
 
 		httpd_uri_t brightness_json = {
-				.uri = "/api/temperature",
+				.uri = "/api/brightness",
 				.method = HTTP_POST,
 				.handler = http_server_brightness_handler,
 				.user_ctx = NULL

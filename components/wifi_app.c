@@ -5,6 +5,8 @@
  *      Author: kjagu
  */
 
+#include "esp_interface.h"
+#include "esp_wifi_types.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
@@ -112,26 +114,32 @@ static void wifi_app_default_wifi_init(void)
 	esp_netif_sta = esp_netif_create_default_wifi_sta();
 	esp_netif_ap = esp_netif_create_default_wifi_ap();
 }
+// SoftAP - WiFi access point configuration
+wifi_config_t ap_config =
+{
+    .ap = {
+            .ssid = WIFI_AP_SSID,
+            .ssid_len = strlen(WIFI_AP_SSID),
+            .password = WIFI_AP_PASSWORD,
+            .channel = WIFI_AP_CHANNEL,
+            .ssid_hidden = WIFI_AP_SSID_HIDDEN,
+            .authmode = WIFI_AUTH_WPA2_PSK,
+            .max_connection = WIFI_AP_MAX_CONNECTIONS,
+            .beacon_interval = WIFI_AP_BEACON_INTERVAL,
+    },
+};
+wifi_config_t sta_config = {
+    .sta = {
+        .ssid = WIFI_STA_SSID,
+        .password = WIFI_STA_PASSWORD,
+    },
+};
 
 /**
  * Configures the WiFi access point settings and assigns the static IP to the SoftAP.
  */
 static void wifi_app_soft_ap_config(void)
 {
-	// SoftAP - WiFi access point configuration
-	wifi_config_t ap_config =
-	{
-		.ap = {
-				.ssid = WIFI_AP_SSID,
-				.ssid_len = strlen(WIFI_AP_SSID),
-				.password = WIFI_AP_PASSWORD,
-				.channel = WIFI_AP_CHANNEL,
-				.ssid_hidden = WIFI_AP_SSID_HIDDEN,
-				.authmode = WIFI_AUTH_WPA2_PSK,
-				.max_connection = WIFI_AP_MAX_CONNECTIONS,
-				.beacon_interval = WIFI_AP_BEACON_INTERVAL,
-		},
-	};
 
 	// Configure DHCP for the AP
 	esp_netif_ip_info_t ap_ip_info;
@@ -146,9 +154,9 @@ static void wifi_app_soft_ap_config(void)
 
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));						///> Setting the mode as Access Point / Station Mode
 	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &ap_config));			///> Set our configuration
+	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &sta_config));			///> Set our configuration
 	ESP_ERROR_CHECK(esp_wifi_set_bandwidth(WIFI_IF_AP, WIFI_AP_BANDWIDTH));		///> Our default bandwidth 20 MHz
 	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_STA_POWER_SAVE));						///> Power save set to "NONE"
-
 }
 
 /**
@@ -173,6 +181,7 @@ static void wifi_app_task(void *pvParameters)
 
 	// Send first event message
 	wifi_app_send_message(WIFI_APP_MSG_START_HTTP_SERVER);
+    esp_wifi_connect();
 
 	for (;;)
 	{
@@ -231,11 +240,6 @@ void wifi_app_start(void)
 	xTaskCreatePinnedToCore(&wifi_app_task, "wifi_app_task", WIFI_APP_TASK_STACK_SIZE, NULL, WIFI_APP_TASK_PRIORITY, NULL, WIFI_APP_TASK_CORE_ID);
 }
 
-
-
-
-
-
-
-
-
+ esp_err_t wifi_connect(char * ssid, char * password){
+     return ESP_OK;
+ }

@@ -8,11 +8,11 @@
 
 
 // Definiciones de configuración ADC
-#define ADC_UNIT ADC_UNIT_2
+#define ADC_UNIT ADC_UNIT_1
 #define ADC_ULP ADC_ULP_MODE_DISABLE
 #define ADC_BITWIDTH ADC_BITWIDTH_13
 #define ADC_ATTEN ADC_ATTEN_DB_11
-#define ADC_CHAN ADC_CHANNEL_6
+#define ADC_CHAN ADC_CHANNEL_0
 
 
 // Inicialización del ADC
