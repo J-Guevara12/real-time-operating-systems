@@ -38,11 +38,14 @@
           <p id="temperature-data">0 °C</p>
 
           <h4>Select the temperature range to modify</h4>
-          <select name="miSelect" id="miSelect">
+          <select name="miSelect" id="miSelect" onchange="showSelectedValue()">
+            <option value="">--Select Range-- </option>
             <option value="temperature 1">Range Temperature 1</option>
             <option value="temperature 2">Range Temperature 2</option>
             <option value="temperature 3">Range Temperature 3</option>
           </select>
+
+          <div id="result"></div>
 
 
           <h2>Led's Brightness</h2>

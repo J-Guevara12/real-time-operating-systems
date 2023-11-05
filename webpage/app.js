@@ -81,9 +81,119 @@ function getUpdateStatus() {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+function showSelectedValue() {
+    const selectElement = document.getElementById("miSelect");
+    const selectedValue = selectElement.value;
+    const resultElement = document.getElementById("result");
+    resultElement.textContent = "Range " + selectedValue;
+}
 
 
 
+////////////////////////////////////////////////////////////////
+
+let range1MinValue = 0;
+let range1MaxValue = 30;
+let range1RedValue = 128;
+let range1GreenValue = 128;
+let range1BlueValue = 128;
+
+let range2MinValue = 31;
+let range2MaxValue = 50;
+let range2RedValue = 128;
+let range2GreenValue = 128;
+let range2BlueValue = 128;
+
+let range3MinValue = 51;
+let range3MaxValue = 70;
+let range3RedValue = 128;
+let range3GreenValue = 128;
+let range3BlueValue = 128;
+
+// ...
+
+function showSelectedValue() {
+    const selectElement = document.getElementById("miSelect");
+    const selectedValue = selectElement.value;
+    const resultElement = document.getElementById("result");
+    resultElement.textContent = "Range " + selectedValue;
+
+    // Actualiza los valores de los sliders y campos de entrada según la opción seleccionada
+    if (selectedValue === "temperature 1") {
+        minRangeInput.value = range1MinValue;
+        maxRangeInput.value = range1MaxValue;
+        document.getElementById("redSlider").value = range1RedValue;
+        document.getElementById("greenSlider").value = range1GreenValue;
+        document.getElementById("blueSlider").value = range1BlueValue;
+    } else if (selectedValue === "temperature 2") {
+        minRangeInput.value = range2MinValue;
+        maxRangeInput.value = range2MaxValue;
+        document.getElementById("redSlider").value = range2RedValue;
+        document.getElementById("greenSlider").value = range2GreenValue;
+        document.getElementById("blueSlider").value = range2BlueValue;
+    } else if (selectedValue === "temperature 3") {
+        minRangeInput.value = range3MinValue;
+        maxRangeInput.value = range3MaxValue;
+        document.getElementById("redSlider").value = range3RedValue;
+        document.getElementById("greenSlider").value = range3GreenValue;
+        document.getElementById("blueSlider").value = range3BlueValue;
+    }
+}
+
+const sendButton = document.getElementById("value-range-temperature");
+
+sendButton.addEventListener("click", () => {
+    const selectedValue = document.getElementById("miSelect").value;
+    const minValue = minRangeInput.value;
+    const maxValue = maxRangeInput.value;
+
+    // Almacena los valores específicos para la opción seleccionada
+    if (selectedValue === "temperature 1") {
+        range1MinValue = minValue;
+        range1MaxValue = maxValue;
+        range1RedValue = parseInt(document.getElementById("redSlider").value);
+        range1GreenValue = parseInt(document.getElementById("greenSlider").value);
+        range1BlueValue = parseInt(document.getElementById("blueSlider").value);
+    } else if (selectedValue === "temperature 2") {
+        range2MinValue = minValue;
+        range2MaxValue = maxValue;
+        range2RedValue = parseInt(document.getElementById("redSlider").value);
+        range2GreenValue = parseInt(document.getElementById("greenSlider").value);
+        range2BlueValue = parseInt(document.getElementById("blueSlider").value);
+    } else if (selectedValue === "temperature 3") {
+        range3MinValue = minValue;
+        range3MaxValue = maxValue;
+        range3RedValue = parseInt(document.getElementById("redSlider").value);
+        range3GreenValue = parseInt(document.getElementById("greenSlider").value);
+        range3BlueValue = parseInt(document.getElementById("blueSlider").value);
+    }
+
+    minRangeValue.textContent = "Min: " + minValue;
+    maxRangeValue.textContent = "Max: " + maxValue;
+
+    // Envía los valores a tu servidor u otro procesamiento aquí
+});
+
+
+
+///////////////////////////////////////////////////////////////
+
+
+// Función para actualizar temperatura y color del LED
+function updateTemperatureAndLED(temperature) {
+    temperatureData.textContent = temperature + ' °C';
+    
+    // Cambiar el color del LED en función de la temperatura
+    if (temperature > rangeMinTemp1 && temperature < rangeMaxTemp1) {
+        ledCircle.style.backgroundColor = 'blue';
+    } else if (temperature > rangeMinTemp2 && temperature < rangeMaxTemp2) {
+        ledCircle.style.backgroundColor = 'green';
+    } else if (temperature > rangeMinTemp3 && temperature < rangeMaxTemp3){
+        ledCircle.style.backgroundColor = 'red';    
+    } else{
+        ledCircle.style.backgroundColor= "red";
+    }
+}
 
 
 
@@ -94,24 +204,6 @@ async function getTemperature() {
 }
 
 
-
-
-
-
-
-// Función para actualizar temperatura y color del LED
-function updateTemperatureAndLED(temperature) {
-    temperatureData.textContent = temperature + ' °C';
-    
-    // Cambiar el color del LED en función de la temperatura
-    if (temperature < 30) {
-        ledCircle.style.backgroundColor = 'blue';
-    } else if (temperature < 50) {
-        ledCircle.style.backgroundColor = 'green';
-    } else {
-        ledCircle.style.backgroundColor = 'red';
-    }
-}
 
 //  datos UART  mostrados
 setInterval(async () => {
@@ -152,7 +244,7 @@ const maxRangeInput= document.getElementById("value-max-range");
 const minRangeValue = document.getElementById("min-range-value");
 const maxRangeValue = document.getElementById("max-range-value");
 const valueRange =document.getElementById("value-range");
-const sendButton = document.getElementById("value-range-temperature");
+
 
 sendButton.addEventListener("click",()=> {
     const minValue = minRangeInput.value;
