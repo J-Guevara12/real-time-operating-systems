@@ -110,7 +110,9 @@ let range3RedValue = 128;
 let range3GreenValue = 128;
 let range3BlueValue = 128;
 
-// ...
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
 
 function showSelectedValue() {
     const selectElement = document.getElementById("miSelect");
@@ -118,7 +120,7 @@ function showSelectedValue() {
     const resultElement = document.getElementById("result");
     resultElement.textContent = "Range " + selectedValue;
 
-    // Actualiza los valores de los sliders y campos de entrada según la opción seleccionada
+    // Actualiza los valores de los sliders y  rangos  ingresados
     if (selectedValue === "temperature 1") {
         minRangeInput.value = range1MinValue;
         maxRangeInput.value = range1MaxValue;
@@ -147,7 +149,7 @@ sendButton.addEventListener("click", () => {
     const minValue = minRangeInput.value;
     const maxValue = maxRangeInput.value;
 
-    // Almacena los valores específicos para la opción seleccionada
+    // almacena  los valores  de cada rango
     if (selectedValue === "temperature 1") {
         range1MinValue = minValue;
         range1MaxValue = maxValue;
@@ -171,7 +173,7 @@ sendButton.addEventListener("click", () => {
     minRangeValue.textContent = "Min: " + minValue;
     maxRangeValue.textContent = "Max: " + maxValue;
 
-    // Envía los valores a tu servidor u otro procesamiento aquí
+
 });
 
 
@@ -184,11 +186,11 @@ function updateTemperatureAndLED(temperature) {
     temperatureData.textContent = temperature + ' °C';
     
     // Cambiar el color del LED en función de la temperatura
-    if (temperature > rangeMinTemp1 && temperature < rangeMaxTemp1) {
+    if (temperature > range1MinValue && temperature < range1MaxValue) {
         ledCircle.style.backgroundColor = 'blue';
-    } else if (temperature > rangeMinTemp2 && temperature < rangeMaxTemp2) {
+    } else if (temperature > range2MinValue && temperature < range2MaxValue) {
         ledCircle.style.backgroundColor = 'green';
-    } else if (temperature > rangeMinTemp3 && temperature < rangeMaxTemp3){
+    } else if (temperature > range3MinValue && temperature < range3MaxValue){
         ledCircle.style.backgroundColor = 'red';    
     } else{
         ledCircle.style.backgroundColor= "red";
@@ -253,10 +255,6 @@ sendButton.addEventListener("click",()=> {
     maxRangeValue.textContent="Max: "+ maxValue;
 
 });
-
-
-
-
 
 
 
