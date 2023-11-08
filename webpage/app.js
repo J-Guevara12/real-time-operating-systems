@@ -104,21 +104,30 @@ function showSelectedValue() {
 
 let range1MinValue = 0;
 let range1MaxValue = 30;
-let range1RedValue = 128;
-let range1GreenValue = 128;
-let range1BlueValue = 128;
 
 let range2MinValue = 31;
 let range2MaxValue = 50;
-let range2RedValue = 128;
-let range2GreenValue = 128;
-let range2BlueValue = 128;
 
 let range3MinValue = 51;
 let range3MaxValue = 70;
-let range3RedValue = 128;
-let range3GreenValue = 128;
-let range3BlueValue = 128;
+
+let R1_RGB = {
+    "red": 255,
+    "green": 0,
+    "blue": 0,
+}
+
+let R2_RGB = {
+    "red": 0,
+    "green": 255,
+    "blue": 0,
+}
+
+let R3_RGB = {
+    "red": 0,
+    "green": 0,
+    "blue": 255,
+}
 
 
 
@@ -134,21 +143,21 @@ function showSelectedValue() {
     if (selectedValue === "temperature 1") {
         minRangeInput.value = range1MinValue;
         maxRangeInput.value = range1MaxValue;
-        document.getElementById("redSlider").value = range1RedValue;
-        document.getElementById("greenSlider").value = range1GreenValue;
-        document.getElementById("blueSlider").value = range1BlueValue;
+        document.getElementById("redSlider").value = R1_RGB.red;
+        document.getElementById("greenSlider").value = R1_RGB.green;
+        document.getElementById("blueSlider").value = R1_RGB.blue;
     } else if (selectedValue === "temperature 2") {
         minRangeInput.value = range2MinValue;
         maxRangeInput.value = range2MaxValue;
-        document.getElementById("redSlider").value = range2RedValue;
-        document.getElementById("greenSlider").value = range2GreenValue;
-        document.getElementById("blueSlider").value = range2BlueValue;
+        document.getElementById("redSlider").value = R2_RGB.red;
+        document.getElementById("greenSlider").value = R2_RGB.green;
+        document.getElementById("blueSlider").value = R2_RGB.blue;
     } else if (selectedValue === "temperature 3") {
         minRangeInput.value = range3MinValue;
         maxRangeInput.value = range3MaxValue;
-        document.getElementById("redSlider").value = range3RedValue;
-        document.getElementById("greenSlider").value = range3GreenValue;
-        document.getElementById("blueSlider").value = range3BlueValue;
+        document.getElementById("redSlider").value = R3_RGB.red;
+        document.getElementById("greenSlider").value = R3_RGB.green;
+        document.getElementById("blueSlider").value = R3_RGB.blue;
     }
 }
 
@@ -163,21 +172,21 @@ sendButton.addEventListener("click", () => {
     if (selectedValue === "temperature 1") {
         range1MinValue = minValue;
         range1MaxValue = maxValue;
-        range1RedValue = parseInt(document.getElementById("redSlider").value);
-        range1GreenValue = parseInt(document.getElementById("greenSlider").value);
-        range1BlueValue = parseInt(document.getElementById("blueSlider").value);
+        R1_RGB.red = parseInt(document.getElementById("redSlider").value);
+        R1_RGB.green = parseInt(document.getElementById("greenSlider").value);
+        R1_RGB.blue = parseInt(document.getElementById("blueSlider").value);
     } else if (selectedValue === "temperature 2") {
         range2MinValue = minValue;
         range2MaxValue = maxValue;
-        range2RedValue = parseInt(document.getElementById("redSlider").value);
-        range2GreenValue = parseInt(document.getElementById("greenSlider").value);
-        range2BlueValue = parseInt(document.getElementById("blueSlider").value);
+        R2_RGB.red = parseInt(document.getElementById("redSlider").value);
+        R2_RGB.green = parseInt(document.getElementById("greenSlider").value);
+        R2_RGB.blue = parseInt(document.getElementById("blueSlider").value);
     } else if (selectedValue === "temperature 3") {
         range3MinValue = minValue;
         range3MaxValue = maxValue;
-        range3RedValue = parseInt(document.getElementById("redSlider").value);
-        range3GreenValue = parseInt(document.getElementById("greenSlider").value);
-        range3BlueValue = parseInt(document.getElementById("blueSlider").value);
+        R3_RGB.red = parseInt(document.getElementById("redSlider").value);
+        R3_RGB.green = parseInt(document.getElementById("greenSlider").value);
+        R3_RGB.blue = parseInt(document.getElementById("blueSlider").value);
     }
 
     minRangeValue.textContent = "Min: " + minValue;
@@ -197,14 +206,14 @@ function updateTemperatureAndLED(temperature) {
     
     // Cambiar el color del LED en función de la temperatura
     if (temperature > range1MinValue && temperature < range1MaxValue) {
-        ledCircle.style.backgroundColor = 'blue';
-    } else if (temperature > range2MinValue && temperature < range2MaxValue) {
-        ledCircle.style.backgroundColor = 'green';
-    } else if (temperature > range3MinValue && temperature < range3MaxValue){
-        ledCircle.style.backgroundColor = 'red';    
-    } else{
-        ledCircle.style.backgroundColor= "red";
-    }
+        sendRGBvalues(R1_RGB)
+    } 
+    else if (temperature > range2MinValue && temperature < range2MaxValue) {
+        sendRGBvalues(R2_RGB)
+    } 
+    else if (temperature > range3MinValue && temperature < range3MaxValue){
+        sendRGBvalues(R3_RGB)
+    } 
 }
 
 
@@ -221,7 +230,7 @@ async function getTemperature() {
 setInterval(async () => {
     const temperature = await getTemperature();
     updateTemperatureAndLED(temperature);
-}, 5000);  // Actualiza cada 5 segundos (
+}, 100);  // Actualiza cada 5 segundos (
 
 
 
@@ -229,24 +238,42 @@ setInterval(async () => {
 
 document.getElementById("redSlider").oninput = function() {
     const value = this.value;
+    const selectedValue = document.getElementById("miSelect").value;
+    if (selectedValue === "temperature 1") {
+        R1_RGB.red = parseInt(value);
+    } else if (selectedValue === "temperature 2") {
+        R2_RGB.red = parseInt(value);
+    } else if (selectedValue === "temperature 3") {
+        R2_RGB.red = parseInt(value);
+    }
     document.getElementById("red-slider-value").textContent = value;
-    console.log(`Valor R: ${value}`);
-    sendRGBvalues();
 };
 
 document.getElementById("greenSlider").oninput = function() {
     const value = this.value;
+    const selectedValue = document.getElementById("miSelect").value;
+    if (selectedValue === "temperature 1") {
+        R1_RGB.green = parseInt(value);
+    } else if (selectedValue === "temperature 2") {
+        R2_RGB.green = parseInt(value);
+    } else if (selectedValue === "temperature 3") {
+        R2_RGB.green = parseInt(value);
+    }
     document.getElementById("green-slider-value").textContent = value;
-    console.log(`Valor G: ${value}`);
-    sendRGBvalues(); 
 };
 
 
 document.getElementById("blueSlider").oninput = function() {
     const value = this.value;
+    const selectedValue = document.getElementById("miSelect").value;
+    if (selectedValue === "temperature 1") {
+        R1_RGB.blue = parseInt(value);
+    } else if (selectedValue === "temperature 2") {
+        R2_RGB.blue = parseInt(value);
+    } else if (selectedValue === "temperature 3") {
+        R2_RGB.blue = parseInt(value);
+    }
     document.getElementById("blue-slider-value").textContent = value;
-    console.log(`Valor B: ${value}`);
-    sendRGBvalues();
 };
 
 
@@ -270,17 +297,7 @@ sendButton.addEventListener("click",()=> {
 
 
 // envio y solitud del  servidor
-async function sendRGBvalues() {
-    const redValue = parseInt(document.getElementById("redSlider").value);
-    const greenValue = parseInt(document.getElementById("greenSlider").value);
-    const blueValue = parseInt(document.getElementById("blueSlider").value);
-  
-    const data = {
-      red: redValue,
-      green: greenValue,
-      blue: blueValue
-    };
-
+async function sendRGBvalues(data) {
     const response = await fetch("api/brightness",{
     method: "POST",headers:{ "Content-Type":"application/json"},
     body: JSON.stringify(data)});
