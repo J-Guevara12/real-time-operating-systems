@@ -240,6 +240,6 @@ void wifi_app_start(void)
 	xTaskCreatePinnedToCore(&wifi_app_task, "wifi_app_task", WIFI_APP_TASK_STACK_SIZE, NULL, WIFI_APP_TASK_PRIORITY, NULL, WIFI_APP_TASK_CORE_ID);
 }
 
- esp_err_t wifi_connect(char * ssid, char * password){
-     return ESP_OK;
- }
+wifi_config_t* wifi_app_get_wifi_config(void){
+    return &sta_config;
+}

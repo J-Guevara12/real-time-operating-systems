@@ -5,14 +5,18 @@
  *      Author: kjagu
  */
 
+#include "esp_err.h"
 #include "esp_http_server.h"
+#include "esp_wifi.h"
 #include "esp_log.h"
 #include "cJSON.h"
 
+#include "esp_wifi_types.h"
 #include "http_server.h"
 #include "tasks_common.h"
 #include "wifi_app.h"
 #include "rgb_led.h"
+#include <string.h>
 
 // Tag used for ESP serial console messages
 static const char TAG[] = "http_server";
@@ -212,13 +216,60 @@ static esp_err_t http_server_brightness_handler(httpd_req_t *req)
 
         rgb_led_set_colors(red,green,blue);
 
-        ESP_LOGI(TAG,"brightness requested");
         httpd_resp_sendstr(req, "OK");
 		return ESP_OK;
     }else{
 		httpd_resp_send_404(req);
 		return ESP_OK;
 	}
+}
+
+static esp_err_t http_server_connect_wifi_handler(httpd_req_t *req)
+{
+    ESP_LOGI(TAG, "Connecting to wifi");
+	if (req->method == HTTP_POST){
+        int total_len = req->content_len;
+        int cur_len = 0;
+        int received = 0;
+		char data [100];
+        while (cur_len < total_len){
+            received = httpd_req_recv(req, data + cur_len, total_len);
+            if (received<0){
+                httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to post control value");
+                return ESP_FAIL;
+            }
+            cur_len += received;
+        }
+        data[total_len] = '\0';
+
+        cJSON *root = cJSON_Parse(data);
+        char * ssid = cJSON_GetObjectItem(root, "ssid")->valuestring;
+        char * password = cJSON_GetObjectItem(root, "password")->valuestring;
+
+        ESP_LOGI(TAG, "%s, %s", ssid, password);
+
+
+        wifi_app_send_message(WIFI_APP_MSG_CONNECTING_FROM_HTTP_SERVER);
+        ESP_ERROR_CHECK(esp_wifi_disconnect());
+
+        wifi_config_t* wifi_config = wifi_app_get_wifi_config();
+        ESP_LOGI(TAG, "HI!: %s, %s", wifi_config->sta.ssid, wifi_config->sta.password);
+        memset(wifi_config,0x00,sizeof(wifi_config_t));
+        memcpy(wifi_config->sta.ssid, ssid, strlen(ssid));
+        memcpy(wifi_config->sta.password, password, strlen(password));
+        ESP_LOGI(TAG, "HEY: %s, %s", wifi_config->sta.ssid, wifi_config->sta.password);
+        ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, wifi_config));			///> Set our configuration
+
+
+        ESP_ERROR_CHECK(esp_wifi_connect());
+
+		return ESP_OK;
+    }else{
+		httpd_resp_send_404(req);
+		return ESP_OK;
+	}
+
+	return ESP_OK;
 }
 
 
@@ -324,6 +375,14 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &brightness_json);
+
+		httpd_uri_t connect_wifi  = {
+				.uri = "/api/connect",
+				.method = HTTP_POST,
+				.handler = http_server_connect_wifi_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &connect_wifi);
 
 
 		

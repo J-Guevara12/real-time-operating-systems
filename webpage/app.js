@@ -17,6 +17,16 @@ sendCredentialsButton.addEventListener("click", function() {
 
     console.log("Value of the ssid; "+ ssdiValue);
     console.log("Value of Password: "+ passwordValue);
+
+    const data = {
+      "ssid": ssdiValue,
+      "password": passwordValue,
+    };
+
+    const request = fetch("/api/connect",{
+        method: "POST",headers:{ "Content-Type":"application/json"},
+        body: JSON.stringify(data)
+    })
 })
 
 //Recive e imprime las veces que se oprimio el boton
@@ -103,8 +113,6 @@ async function sendRGBvalues() {
     method: "POST",headers:{ "Content-Type":"application/json"},
     body: JSON.stringify(data)});
     if (response.ok){
-        const reslt = await response.json();
-        console.log(reslt)
-        return reslt;
+        return response.statusText
     }
 }
